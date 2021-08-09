@@ -120,7 +120,7 @@ The workspace provided in the SFND classroom comes preinstallated with everythin
 ```sh
 git clone https://github.com/Microsoft/vcpkg.git
 ```
-2. checkout one commit before: `git checkout c7cd618^` (Windows will prompt: "More?" type: ^)
+2. checkout one commit before change to VTK8: `git checkout c7cd618^` (Windows will prompt: "More?" type: ^)
 
 4. Follow the steps [here](https://pointclouds.org/downloads/) to install PCL.
 
