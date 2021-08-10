@@ -6,6 +6,7 @@
 #include "../../processPointClouds.h"
 // using templates for processPointClouds so also include .cpp to help linker
 #include "../../processPointClouds.cpp"
+#include <cmath>
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData()
 {
@@ -44,10 +45,10 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData()
 
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData3D()
+pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData3D(const std::string& file_name)
 {
   ProcessPointClouds<pcl::PointXYZ> pointProcessor;
-  return pointProcessor.loadPcd("../../../sensors/data/pcd/simpleHighway.pcd");
+  return pointProcessor.loadPcd(file_name);
 }
 
 
@@ -59,6 +60,31 @@ pcl::visualization::PCLVisualizer::Ptr initScene()
     viewer->setCameraPosition(0, 0, 15, 0, 1, 0);
     viewer->addCoordinateSystem (1.0);
     return viewer;
+}
+
+template <typename Point3, typename Point4>
+Point4 get_plane(Point3& p1, Point3& p2, Point3& p3)
+{
+  float a1 = p2.x - p1.x;
+  float b1 = p2.y - p1.y;
+  float c1 = p2.z - p1.z;
+  float a2 = p3.x - p1.x;
+  float b2 = p3.y - p1.y;
+  float c2 = p3.z - p1.z;
+
+  float a = b1 * c2 - b2 * c1;
+  float b = a2 * c1 - a1 * c2;
+  float c = a1 * b2 - b1 * a2;
+  float d = (-a * p1.x - b * p1.y - c * p1.z);
+
+  return PointT(a, b, c, d);
+}
+
+template <typename Point3, typename Point4>
+float distance_to_plane(Point3& pt, Point4& plane) {
+
+  return std::fabs(plane.x * pt.x + plane.y * pt.y + plane.z * pt.z + plane.intensity) / std::sqrtf(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
+
 }
 
 std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int maxIterations, float distanceTol)
@@ -88,7 +114,8 @@ int main ()
   pcl::visualization::PCLVisualizer::Ptr viewer = initScene();
 
   // Create data
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData();
+  // Define file location in CMakeLists.txt
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud = CreateData3D(POINT_CLOUD_FILE);
   
 
   // TODO: Change the max iteration and distance tolerance arguments for Ransac function
