@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2)
 
-add_definitions(-std=c++11)
+project(playback LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
