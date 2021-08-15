@@ -57,8 +57,8 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
     ProcessPointClouds<pcl::PointXYZ> pointProcessor;
 
     std::pair<pcl::PointCloud<pcl::PointXYZ>::Ptr, pcl::PointCloud<pcl::PointXYZ>::Ptr> segmentCloud = pointProcessor.SegmentPlane(ptCloud, 100, 0.2);
-    //renderPointCloud(viewer, segmentCloud.first, "obstCloud", Color(1, 0, 0));
-    //renderPointCloud(viewer, segmentCloud.second, "planeCloud", Color(0, 1, 0));
+    renderPointCloud(viewer, segmentCloud.first, "obstCloud", Color(1, 0, 0));
+    renderPointCloud(viewer, segmentCloud.second, "planeCloud", Color(0, 1, 0));
 
     std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> cloudClusters = pointProcessor.Clustering(segmentCloud.first, 1.0, 3, 30);
 
@@ -70,11 +70,22 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
       std::cout << "cluster size ";
       pointProcessor.numPoints(cluster);
       renderPointCloud(viewer, cluster, "obstCloud" + std::to_string(clusterId), colors[clusterId]);
+      Box box = pointProcessor.BoundingBox(cluster);
+      renderBox(viewer, box, clusterId);
       ++clusterId;
     }
   
 }
 
+void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer) {
+
+  ProcessPointClouds<pcl::PointXYZI> * pointProcessor = new ProcessPointClouds<pcl::PointXYZI>();
+  pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessor->loadPcd(CAR_CLOUD_FILE);
+  renderPointCloud(viewer, inputCloud, "inputCloud");
+
+  auto filterCloud = pointProcessor->FilterCloud(inputCloud, 0.1f , Eigen::Vector4f(-5 , -5 , -5 , 1), Eigen::Vector4f(5 , 5 , 5 , 1));
+  renderPointCloud(viewer, filterCloud, "filterCloud");
+}
 
 //setAngle: SWITCH CAMERA ANGLE {XY, TopDown, Side, FPS}
 void initCamera(CameraAngle setAngle, pcl::visualization::PCLVisualizer::Ptr& viewer)

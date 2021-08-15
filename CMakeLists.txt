@@ -16,6 +16,8 @@ list(REMOVE_ITEM PCL_LIBRARIES "vtkproj4")
 message(STATUS "PCL INCLUDES: ${PCL_INCLUDE_DIRS}")
 message(STATUS "PCL LIBRARIES: ${PCL_LIBRARIES}")
 
+add_compile_definitions(CAR_CLOUD_FILE="C:/git/udacity/LidarDetection/src/sensors/data/pcd/data_1/0000000000.pcd")
+
 add_executable (environment src/environment.cpp src/render/render.cpp src/processPointClouds.cpp)
 target_link_libraries (environment ${PCL_LIBRARIES})
 
