@@ -36,30 +36,6 @@ std::vector<Car> initHighway(bool renderScene, pcl::visualization::PCLVisualizer
     return cars;
 }
 
-void verySimpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
-{
-  // ----------------------------------------------------
-  // -----Open 3D viewer and display simple highway -----
-  // ----------------------------------------------------
-
-  // RENDER OPTIONS
-  bool renderScene = false;
-  std::vector<Car> cars = initHighway(renderScene, viewer);
-
-  // TODO:: Create lidar sensor 
-  std::shared_ptr<Lidar> lidar = std::make_shared<Lidar>(cars, 0);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr ptCloud = lidar->scan();
-  //renderPointCloud(viewer, ptCloud, "cloud");
-  //renderRays(viewer, lidar->position, ptCloud);
-
-  // TODO:: Create point processor
-  ProcessPointClouds<pcl::PointXYZ> pointProcessor;
-  std::pair<pcl::PointCloud<pcl::PointXYZ>::Ptr, pcl::PointCloud<pcl::PointXYZ>::Ptr> segmentCloud = pointProcessor.SegmentPlane(ptCloud, 100, 0.2);
-  renderPointCloud(viewer, segmentCloud.first, "obstCloud", Color(1, 0, 0));
-  renderPointCloud(viewer, segmentCloud.second, "planeCloud", Color(0, 1, 0));
-
-}
-
 void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 {
     // ----------------------------------------------------
@@ -104,9 +80,8 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer) {
 
   ProcessPointClouds<pcl::PointXYZI> * pointProcessor = new ProcessPointClouds<pcl::PointXYZI>();
   pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud = pointProcessor->loadPcd(CAR_CLOUD_FILE);
-  renderPointCloud(viewer, inputCloud, "inputCloud");
-
-  auto filterCloud = pointProcessor->FilterCloud(inputCloud, 0.1f , Eigen::Vector4f(-5 , -5 , -5 , 1), Eigen::Vector4f(5 , 5 , 5 , 1));
+  
+  auto filterCloud = pointProcessor->FilterCloud(inputCloud, 0.2f , Eigen::Vector4f(-20 , -20 , -3 , 1), Eigen::Vector4f(50 , 50 , 5 , 1));
   renderPointCloud(viewer, filterCloud, "filterCloud");
 }
 
@@ -141,7 +116,7 @@ int main (int argc, char** argv)
     pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
     CameraAngle setAngle = XY;
     initCamera(setAngle, viewer);
-    verySimpleHighway(viewer);
+    cityBlock(viewer);
 
     while (!viewer->wasStopped ())
     {
