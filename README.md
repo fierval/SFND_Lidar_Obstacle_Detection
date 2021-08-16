@@ -118,14 +118,14 @@ The workspace provided in the SFND classroom comes preinstallated with everythin
 
 1. Clone vcpkg depot
 
-```sh
-git clone https://github.com/Microsoft/vcpkg.git
-git checkout c7cd618^^
-cd vcpkg
-bootstrap-vcpkg.bat
-vcpkg integrate install
-vcpkg install pcl
-```
+   ```sh
+   git clone https://github.com/Microsoft/vcpkg.git
+   git checkout c7cd618^^
+   cd vcpkg
+   bootstrap-vcpkg.bat
+   vcpkg integrate install
+   vcpkg install pcl
+   ```
 (The checkout command is actually `git checkout c7cd618^`, but the "`^`" character needs to be escaped on Windows). This particular checkin breaks VTK version so PCL will not be installed correctly if using a later `vcpkg`.
 
 2. Clone this github repo
