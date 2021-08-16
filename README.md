@@ -47,7 +47,7 @@ The workspace provided in the SFND classroom comes preinstallated with everythin
    
    project(playback)
    
-   find_package(PCL 1.9.1 REQUIRED)
+   find_package(PCL 1.7 REQUIRED)
    
    include_directories(${PCL_INCLUDE_DIRS})
    link_directories(${PCL_LIBRARY_DIRS})
@@ -117,30 +117,34 @@ The workspace provided in the SFND classroom comes preinstallated with everythin
 #### Install via vcpkg
 
 1. Clone vcpkg depot
+
 ```sh
 git clone https://github.com/Microsoft/vcpkg.git
+git checkout c7cd618^^
+cd vcpkg
+bootstrap-vcpkg.bat
+vcpkg integrate install
+vcpkg install pcl
 ```
-2. checkout one commit before change to VTK8: `git checkout c7cd618^` (Windows will prompt: "More?" type: ^)
+(The checkout command is actually `git checkout c7cd618^`, but the "`^`" character needs to be escaped on Windows). This particular checkin breaks VTK version so PCL will not be installed correctly if using a later `vcpkg`.
 
-4. Follow the steps [here](https://pointclouds.org/downloads/) to install PCL.
-
-5. Clone this github repo
+2. Clone this github repo
 
    ```shell
    cd ~
    git clone https://github.com/udacity/SFND_Lidar_Obstacle_Detection.git
    ```
 
-6. Edit the CMakeLists.txt file as shown in Step 2 of Ubuntu installation instructions above.
+3. Edit the CMakeLists.txt file as shown in Step 2 of Ubuntu installation instructions above.
 
-7. Execute the following commands in Powershell or Terminal
+4. Execute the following commands in Powershell or Terminal
 
    ```shell
    cd ~/SFND_Lidar_Obstacle_Detection
    mkdir build && cd build
    cmake ..
    make
-   ./environment
+   environment.exe
    ```
 
 #### Build from Source
