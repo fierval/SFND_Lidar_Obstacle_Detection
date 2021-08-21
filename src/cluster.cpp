@@ -7,43 +7,7 @@
 #include <string>
 #include "kdtree.h"
 
-// Arguments:
-// window is the region to draw box around
-// increase zoom to see more of the area
-pcl::visualization::PCLVisualizer::Ptr initScene(Box window, int zoom)
-{
-  pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("2D Viewer"));
-  viewer->setBackgroundColor(0, 0, 0);
-  viewer->initCameraParameters();
-  viewer->setCameraPosition(0, 0, zoom, 0, 1, 0);
-  viewer->addCoordinateSystem(1.0);
-
-  viewer->addCube(window.x_min, window.x_max, window.y_min, window.y_max, 0, 0, 0, 0, 0, "window");
-  return viewer;
-}
-
-pcl::PointCloud<pcl::PointXYZ>::Ptr CreateData(std::vector<std::vector<float>> points)
-{
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
-
-  for (int i = 0; i < points.size(); i++)
-  {
-    pcl::PointXYZ point;
-    point.x = points[i][0];
-    point.y = points[i][1];
-    point.z = 0;
-
-    cloud->points.push_back(point);
-
-  }
-  cloud->width = cloud->points.size();
-  cloud->height = 1;
-
-  return cloud;
-
-}
-
-void clusterHelper(int idx, const std::vector<std::vector<float>>& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree* tree, float distanceTol) {
+void clusterHelper(int idx, const std::vector<pcl::PointXYZI>& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree* tree, float distanceTol) {
 
   processed[idx] = true;
   cluster.push_back(idx);
@@ -56,7 +20,7 @@ void clusterHelper(int idx, const std::vector<std::vector<float>>& points, std::
   }
 }
 
-std::vector<std::vector<int>> euclideanCluster(const std::vector<std::vector<float>>& points, KdTree* tree, float distanceTol)
+std::vector<std::vector<int>> euclideanCluster(const std::vector<pcl::PointXYZI>& points, KdTree* tree, float distanceTol)
 {
 
   std::vector<std::vector<int>> clusters;

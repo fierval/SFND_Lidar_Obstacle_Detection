@@ -1,5 +1,4 @@
-/* \author Aaron Brown */
-// Quiz on implementing kd tree
+#pragma once
 
 // Structure to represent node of kd tree
 struct Node
@@ -26,7 +25,9 @@ struct KdTree
 
 	KdTree()
 	: root(NULL)
-	{}
+	{
+	
+	}
 
 	~KdTree()
 	{
@@ -53,12 +54,22 @@ struct KdTree
 	inline float get_distance(std::vector<float> a, std::vector<float> b) {
 		float x = a[0] - b[0];
 		float y = a[1] - b[1];
+		float z = a[2] - b[2];
 
-		return std::sqrtf(x * x + y * y);
+		return std::sqrtf(x * x + y * y + z * z);
 	}
 
 	inline bool is_in_box_of_distance(std::vector<float> v, std::vector<float> target, float dist) {
-		return (target[0] + dist) >= v[0] && (target[1] + dist) >= v[1] && (target[0] - dist) <= v[0] && (target[1] - dist) <= v[1];
+
+		bool res = true;
+		for (int i = 0; i < target.size(); i++) {
+			if((target[i] + dist) < v[i] || (target[i] - dist) > v[i]) {
+				res = false;
+				break;
+			}
+		}
+		//return (target[0] + dist) >= v[0] && (target[1] + dist) >= v[1] && (target[0] - dist) <= v[0] && (target[1] - dist) <= v[1];
+		return res;
 	}
 
 	void searchHelper(std::vector<float> target, Node* node, int depth, float distanceTol, std::vector<int>& ids) {
@@ -84,20 +95,32 @@ struct KdTree
 
 	}
 
-	inline void insert(std::vector<float> point, int id)
+	inline void insert(pcl::PointXYZI point, int id)
 	{
-		insertHelper(&root, 0, point, id);
+		std::vector<float> v_point(3);
+		v_point[0] = point.x;
+		v_point[1] = point.y;
+		v_point[2] = point.z;
+
+		insertHelper(&root, 0, v_point, id);
 	}
 
 	// return a list of point ids in the tree that are within distance of target
-	inline std::vector<int> search(std::vector<float> target, float distanceTol)
+	inline std::vector<int> search(pcl::PointXYZI target, float distanceTol)
 	{
 		std::vector<int> ids;
-		searchHelper(target, root, 0, distanceTol, ids);
+
+		std::vector<float> v_point(3);
+		v_point[0] = target.x;
+		v_point[1] = target.y;
+		v_point[2] = target.z;
+
+		searchHelper(v_point, root, 0, distanceTol, ids);
 		return ids;
 	}
 	
-
+private:
+	bool is_2d;
 };
 
 
