@@ -1,5 +1,4 @@
-/* \author Aaron Brown */
-// Quiz on implementing simple RANSAC line fitting
+#pragma once
 
 #include "render/render.h"
 #include "render/box.h"
@@ -7,7 +6,11 @@
 #include <string>
 #include "kdtree.h"
 
-void clusterHelper(int idx, const std::vector<pcl::PointXYZI>& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree<pcl::PointXYZI, 3>* tree, float distanceTol) {
+template <typename PointT>
+using eigen_vector = std::vector<PointT, Eigen::aligned_allocator<PointT> >;
+
+template <typename PointT>
+void clusterHelper(int idx, const std::vector<PointT, Eigen::aligned_allocator<PointT> >& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree<PointT, 3>* tree, float distanceTol) {
 
   processed[idx] = true;
   cluster.push_back(idx);
@@ -20,8 +23,11 @@ void clusterHelper(int idx, const std::vector<pcl::PointXYZI>& points, std::vect
   }
 }
 
-std::vector<std::vector<int>> euclideanCluster(const std::vector<pcl::PointXYZI>& points, KdTree<pcl::PointXYZI, 3>* tree, float distanceTol)
+template <typename PointT>
+std::vector<std::vector<int>> euclideanCluster(typename pcl::PointCloud<PointT>& pointCloud, KdTree<PointT, 3>* tree, float distanceTol)
 {
+
+  auto& points = pointCloud.points;
 
   std::vector<std::vector<int>> clusters;
   std::vector<bool> processed(points.size(), false);

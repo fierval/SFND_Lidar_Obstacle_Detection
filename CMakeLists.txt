@@ -21,8 +21,7 @@ add_compile_definitions(CAR_CLOUD_FILE="C:/git/udacity/LidarDetection/src/sensor
 set(SOURCE_FILES 
       src/environment.cpp 
       src/render/render.cpp 
-      src/processPointClouds.cpp
-      src/cluster.cpp)
+      src/processPointClouds.cpp)
 
 add_executable (environment ${SOURCE_FILES})
 target_link_libraries (environment ${PCL_LIBRARIES})

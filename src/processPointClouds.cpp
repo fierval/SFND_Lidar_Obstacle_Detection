@@ -2,6 +2,7 @@
 
 #include "processPointClouds.h"
 #include "ransac.h"
+#include "cluster.hpp"
 
 //constructor:
 template<typename PointT>
@@ -218,30 +219,24 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 
   std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
 
-  // TODO:: Fill in the function to perform euclidean clustering to group detected obstacles
-    // Creating the KdTree object for the search method of the extraction
-  pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
-  tree->setInputCloud(cloud);
+  std::shared_ptr<KdTree<PointT, 3>> tree(new KdTree<PointT, 3>);
 
-  std::vector<pcl::PointIndices> cluster_indices;
-  pcl::EuclideanClusterExtraction<PointT> ec;
-  ec.setClusterTolerance(clusterTolerance); // 2cm
-  ec.setMinClusterSize(minSize);
-  ec.setMaxClusterSize(maxSize);
-  ec.setSearchMethod(tree);
-  ec.setInputCloud(cloud);
-  ec.extract(cluster_indices);
+  auto cluster_idxs = euclideanCluster(*cloud, tree.get(), clusterTolerance);
 
-  for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin(); it != cluster_indices.end(); ++it)
+  int clusterId = 0;
+
+  for (std::vector<int> cluster_idx : cluster_idxs)
   {
-    pcl::PointCloud<PointT>::Ptr cloud_cluster(new pcl::PointCloud<PointT>);
-    for (const auto& idx : it->indices)
-      cloud_cluster->push_back((*cloud)[idx]); //*
-    cloud_cluster->width = cloud_cluster->size();
-    cloud_cluster->height = 1;
-    cloud_cluster->is_dense = true;
-
-    clusters.push_back(cloud_cluster);
+    pcl::PointCloud<PointT>::Ptr clusterCloud(new pcl::PointCloud<PointT>());
+    for (int idx : cluster_idx) {
+      if (std::is_same<PointT, pcl::PointXY>::value) {
+        clusterCloud->points.push_back(PointT(points[idx][0], points[idx][1]));
+      }
+      else {
+        clusterCloud->points.push_back(PointT(points[idx][0], points[idx][1], points[idx][2]));
+      }
+    }
+    clusters.push_back(clusterCloud);
   }
 
   auto endTime = std::chrono::steady_clock::now();
