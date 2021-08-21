@@ -97,13 +97,13 @@ struct KdTree
 
 	}
 
-	inline void insert(pcl::PointXYZI point, int id)
+	inline void insert(PointT point, int id)
 	{
 		insertHelper(&root, 0, point.data, id);
 	}
 
 	// return a list of point ids in the tree that are within distance of target
-	inline std::vector<int> search(pcl::PointXYZI target, float distanceTol)
+	inline std::vector<int> search(PointT target, float distanceTol)
 	{
 		std::vector<int> ids;
 
