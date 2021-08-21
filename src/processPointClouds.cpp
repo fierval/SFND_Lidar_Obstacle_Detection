@@ -229,12 +229,7 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
   {
     pcl::PointCloud<PointT>::Ptr clusterCloud(new pcl::PointCloud<PointT>());
     for (int idx : cluster_idx) {
-      if (std::is_same<PointT, pcl::PointXY>::value) {
-        clusterCloud->points.push_back(PointT(points[idx][0], points[idx][1]));
-      }
-      else {
-        clusterCloud->points.push_back(PointT(points[idx][0], points[idx][1], points[idx][2]));
-      }
+        clusterCloud->points.push_back(cloud->points[idx]);
     }
     clusters.push_back(clusterCloud);
   }
