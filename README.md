@@ -142,10 +142,12 @@ The workspace provided in the SFND classroom comes preinstallated with everythin
    ```shell
    cd ~/SFND_Lidar_Obstacle_Detection
    mkdir build && cd build
-   cmake ..
-   make
+   cmake .. -DCMAKE_TOOLCHAIN_FILE=<vcpkg-git-repo-root>\scripts\buildsystems\vcpkg.cmake  
+   "C:\Program Files\CMake\bin\cmake.EXE" --build c:/git/udacity/LidarDetection/build --config Debug --target ALL_BUILD -j 18 --
    environment.exe
    ```
+
+   Or build and run with Visual Studio or Visual Studio Code
 
 #### Build from Source
 
