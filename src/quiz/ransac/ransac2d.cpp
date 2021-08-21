@@ -92,7 +92,8 @@ float distance_to_plane(Point3& pt, Point4& plane) {
 
 }
 
-std::unordered_set<int> Ransac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, int maxIterations, float distanceTol)
+template<typename Point3>
+std::unordered_set<int> Ransac(typename pcl::PointCloud<Point3>::Ptr cloud, int maxIterations, float distanceTol)
 {
   std::unordered_set<int> inliersResult;
   srand(time(NULL));
