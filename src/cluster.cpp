@@ -7,7 +7,7 @@
 #include <string>
 #include "kdtree.h"
 
-void clusterHelper(int idx, const std::vector<pcl::PointXYZI>& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree* tree, float distanceTol) {
+void clusterHelper(int idx, const std::vector<pcl::PointXYZI>& points, std::vector<int>& cluster, std::vector<bool>& processed, KdTree<pcl::PointXYZI, 3>* tree, float distanceTol) {
 
   processed[idx] = true;
   cluster.push_back(idx);
@@ -20,7 +20,7 @@ void clusterHelper(int idx, const std::vector<pcl::PointXYZI>& points, std::vect
   }
 }
 
-std::vector<std::vector<int>> euclideanCluster(const std::vector<pcl::PointXYZI>& points, KdTree* tree, float distanceTol)
+std::vector<std::vector<int>> euclideanCluster(const std::vector<pcl::PointXYZI>& points, KdTree<pcl::PointXYZI, 3>* tree, float distanceTol)
 {
 
   std::vector<std::vector<int>> clusters;

@@ -19,13 +19,13 @@ struct Node
 	}
 };
 
+template <typename PointT, int Depth>
 struct KdTree
 {
 	Node* root;
 
 	KdTree()
-	: root(NULL)
-	{
+	: root(NULL)	{
 	
 	}
 
@@ -41,7 +41,7 @@ struct KdTree
 			return;
 		}
 
-		int cd = depth & 1;
+		int cd = depth % Depth;
 
 		if (point[cd] < ((*node)->point[cd])) {
 			insertHelper(&((*node)->left), depth + 1, point, id);
@@ -84,7 +84,7 @@ struct KdTree
 			}
 		}
 
-		int cd = depth & 1;
+		int cd = depth % Depth;
 		if ((target[cd] - distanceTol) < node->point[cd]) {
 			searchHelper(target, node->left, depth + 1, distanceTol, ids);
 		}
@@ -97,10 +97,7 @@ struct KdTree
 
 	inline void insert(pcl::PointXYZI point, int id)
 	{
-		std::vector<float> v_point(3);
-		v_point[0] = point.x;
-		v_point[1] = point.y;
-		v_point[2] = point.z;
+		std::vector<float> v_point(point.data, point.data + (Depth - 1));
 
 		insertHelper(&root, 0, v_point, id);
 	}
@@ -110,17 +107,10 @@ struct KdTree
 	{
 		std::vector<int> ids;
 
-		std::vector<float> v_point(3);
-		v_point[0] = target.x;
-		v_point[1] = target.y;
-		v_point[2] = target.z;
-
+		std::vector<float> v_point(target.data, target.data + (Depth - 1));
 		searchHelper(v_point, root, 0, distanceTol, ids);
 		return ids;
 	}
-	
-private:
-	bool is_2d;
 };
 
 
