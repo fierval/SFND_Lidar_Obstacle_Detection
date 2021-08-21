@@ -52,11 +52,13 @@ struct KdTree
 	}
 
 	inline float get_distance(std::vector<float> a, std::vector<float> b) {
-		float x = a[0] - b[0];
-		float y = a[1] - b[1];
-		float z = a[2] - b[2];
 
-		return std::sqrtf(x * x + y * y + z * z);
+		float res = 0;
+		for (int i = 0; i < Depth; i++) {
+			res += (a[i] - b[i]) * (a[i] - b[i]);
+		}
+
+		return std::sqrtf(res);
 	}
 
 	inline bool is_in_box_of_distance(std::vector<float> v, std::vector<float> target, float dist) {
