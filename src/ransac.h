@@ -1,5 +1,4 @@
-/* \author Aaron Brown */
-// Quiz on implementing simple RANSAC line fitting
+#pragma once
 
 #include <unordered_set>
 #include <cmath>

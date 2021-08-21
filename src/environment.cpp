@@ -10,7 +10,6 @@
 #include <unordered_set>
 #include <cmath>
 #include <memory>
-#include "ransac2d.h"
 
 std::vector<Car> initHighway(bool renderScene, pcl::visualization::PCLVisualizer::Ptr& viewer)
 {
@@ -61,7 +60,7 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
   renderPointCloud(viewer, segmentCloud.first, "obstCloud", Color(1, 0, 0));
   renderPointCloud(viewer, segmentCloud.second, "planeCloud", Color(0, 1, 0));
 
-  std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> cloudClusters = pointProcessor->Clustering(segmentCloud.first, 1.0, 3, 30);
+  auto cloudClusters = pointProcessor->Clustering(segmentCloud.first, 1.0, 3, 30);
 
   int clusterId = 0;
   std::vector<Color> colors = { Color(1,0,0), Color(0,1,0), Color(0,0,1) };
@@ -81,34 +80,27 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointClouds<pcl::PointXYZI>* pointProcessor, pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud) {
 
   auto filterCloud = pointProcessor->FilterCloud(inputCloud, 0.3f, Eigen::Vector4f(-10, -5, -2, 1), Eigen::Vector4f(30, 7, 1, 1));
-  auto inliers = Ransac<pcl::PointXYZI>(filterCloud, 25, 0.3);
 
-  // pcl::PointCloud<pcl::PointXYZI>::Ptr  cloudInliers(new pcl::PointCloud<pcl::PointXYZ>());
-  pcl::PointCloud<pcl::PointXYZI>::Ptr cloudOutliers(new pcl::PointCloud<pcl::PointXYZI>());
+  // REVIEW: SegmentPlaneCustom uses custom implementation of RANSAC
+  auto segmentCloud = pointProcessor->SegmentPlaneCustom(filterCloud, 25, 0.3);
 
-  for (int index = 0; index < filterCloud->points.size(); index++)
+  renderPointCloud(viewer, segmentCloud.first, "inliers");
+  renderPointCloud(viewer, segmentCloud.second, "outliers");
+
+  // REVIEW: ClusteringCustom uses custom clustering algorithm
+  auto cloudClusters = pointProcessor->ClusteringCustom(segmentCloud.first, 0.53, 10, 300);
+  int clusterId = 0;
+  std::vector<Color> colors = { Color(1,0,0), Color(0,1,0), Color(0,0,1)};
+
+  for (auto cluster : cloudClusters)
   {
-    pcl::PointXYZI point = filterCloud->points[index];
-    if (inliers.count(index) == 0)
-      cloudOutliers->points.push_back(point);
+    std::cout << "cluster size ";
+    pointProcessor->numPoints(cluster);
+    renderPointCloud(viewer, cluster, "obstCloud" + std::to_string(clusterId), colors[clusterId % colors.size()]);
+    Box box = pointProcessor->BoundingBox(cluster);
+    renderBox(viewer, box, clusterId);
+    ++clusterId;
   }
-
-  //auto cloudClusters = pointProcessor->Clustering(segmentCloud.first, 0.53, 10, 300);
-
-  renderPointCloud(viewer, filterCloud, "filterCloud");
-
-  //int clusterId = 0;
-  //std::vector<Color> colors = { Color(1,0,0), Color(0,1,0), Color(0,0,1), Color(1,0,1), Color(0,1,1), Color(1, 0, 1) };
-
-  //for (auto cluster : cloudClusters)
-  //{
-  //  std::cout << "cluster size ";
-  //  pointProcessor->numPoints(cluster);
-  //  renderPointCloud(viewer, cluster, "obstCloud" + std::to_string(clusterId), colors[clusterId % colors.size()]);
-  //  Box box = pointProcessor->BoundingBox(cluster);
-  //  renderBox(viewer, box, clusterId);
-  //  ++clusterId;
-  //}
 
 }
 
