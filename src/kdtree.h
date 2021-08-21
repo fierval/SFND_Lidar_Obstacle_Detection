@@ -3,12 +3,12 @@
 // Structure to represent node of kd tree
 struct Node
 {
-	std::vector<float> point;
+	float * point;
 	int id;
 	Node* left;
 	Node* right;
 
-	Node(std::vector<float> arr, int setId)
+	Node(float * arr, int setId)
 	:	point(arr), id(setId), left(NULL), right(NULL)
 	{}
 
@@ -34,7 +34,7 @@ struct KdTree
 		delete root;
 	}
 
-	void insertHelper(Node** node, int depth, std::vector<float> point, int id) {
+	void insertHelper(Node** node, int depth, float * point, int id) {
 
 		if (*node == nullptr) {
 			*node = new Node(point, id);
@@ -51,7 +51,7 @@ struct KdTree
 		}
 	}
 
-	inline float get_distance(std::vector<float> a, std::vector<float> b) {
+	inline float get_distance(float * a, float * b) {
 
 		float res = 0;
 		for (int i = 0; i < Depth; i++) {
@@ -61,10 +61,10 @@ struct KdTree
 		return std::sqrtf(res);
 	}
 
-	inline bool is_in_box_of_distance(std::vector<float> v, std::vector<float> target, float dist) {
+	inline bool is_in_box_of_distance(float * v, float * target, float dist) {
 
 		bool res = true;
-		for (int i = 0; i < target.size(); i++) {
+		for (int i = 0; i < Depth; i++) {
 			if((target[i] + dist) < v[i] || (target[i] - dist) > v[i]) {
 				res = false;
 				break;
@@ -74,7 +74,7 @@ struct KdTree
 		return res;
 	}
 
-	void searchHelper(std::vector<float> target, Node* node, int depth, float distanceTol, std::vector<int>& ids) {
+	void searchHelper(float * target, Node* node, int depth, float distanceTol, std::vector<int>& ids) {
 		if (node == nullptr) {
 			return;
 		}
@@ -99,9 +99,7 @@ struct KdTree
 
 	inline void insert(pcl::PointXYZI point, int id)
 	{
-		std::vector<float> v_point(point.data, point.data + (Depth - 1));
-
-		insertHelper(&root, 0, v_point, id);
+		insertHelper(&root, 0, point.data, id);
 	}
 
 	// return a list of point ids in the tree that are within distance of target
@@ -109,8 +107,7 @@ struct KdTree
 	{
 		std::vector<int> ids;
 
-		std::vector<float> v_point(target.data, target.data + (Depth - 1));
-		searchHelper(v_point, root, 0, distanceTol, ids);
+		searchHelper(target.data, root, 0, distanceTol, ids);
 		return ids;
 	}
 };
