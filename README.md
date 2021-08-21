@@ -38,9 +38,9 @@ The workspace provided in the SFND classroom comes preinstallated with everythin
 2.  Edit [CMakeLists.txt](https://github.com/udacity/SFND_Lidar_Obstacle_Detection/blob/master/CMakeLists.txt) as follows:
 
    ```cmake
-   cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+   cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
    
-   add_definitions(-std=c++14)
+  set(CMAKE_CXX_STANDARD 17)
    
    set(CXX_FLAGS "-Wall")
    set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
