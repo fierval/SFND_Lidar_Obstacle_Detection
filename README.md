@@ -50,13 +50,13 @@ For other platforms see the original [README](https://github.com/udacity/SFND_Li
    git clone https://github.com/fierval/SFND_Lidar_Obstacle_Detection.git
    ```
 
-3. To build and run from the command line:
+3. To build and run from the command line (make sure cmake is in your path):
 
    ```shell
    cd ~/SFND_Lidar_Obstacle_Detection
    mkdir build && cd build
    cmake .. -DCMAKE_TOOLCHAIN_FILE=<vcpkg-git-repo-root>\scripts\buildsystems\vcpkg.cmake  
-   "C:\Program Files\CMake\bin\cmake.EXE" --build c:/git/udacity/LidarDetection/build --config Debug --target ALL_BUILD -j 18 --
+   cmake --build c:/git/udacity/LidarDetection/build --config Debug --target ALL_BUILD -j 18 --
    environment.exe
    ```
 
