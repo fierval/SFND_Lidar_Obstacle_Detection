@@ -50,9 +50,7 @@ For other platforms see the original [README](https://github.com/udacity/SFND_Li
    git clone https://github.com/fierval/SFND_Lidar_Obstacle_Detection.git
    ```
 
-3. Edit the CMakeLists.txt file as shown in Step 2 of Ubuntu installation instructions above.
-
-4. Execute the following commands in Powershell or Terminal
+3. To build and run from the command line (or simply build/run from Visual Studio or VSCode)
 
    ```shell
    cd ~/SFND_Lidar_Obstacle_Detection
