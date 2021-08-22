@@ -45,14 +45,14 @@ For other platforms see the original [README](https://github.com/udacity/SFND_Li
 
 2. Clone this github repo
 
-   ```shell
+   ```sh
    cd ~
    git clone https://github.com/fierval/SFND_Lidar_Obstacle_Detection.git
    ```
 
 3. To build and run from the command line (make sure cmake is in your path):
 
-   ```shell
+   ```sh
    cd ~/SFND_Lidar_Obstacle_Detection
    mkdir build && cd build
    cmake .. -DCMAKE_TOOLCHAIN_FILE=<vcpkg-git-repo-root>\scripts\buildsystems\vcpkg.cmake  
@@ -62,6 +62,21 @@ For other platforms see the original [README](https://github.com/udacity/SFND_Li
 
    Or build and run with Visual Studio or Visual Studio Code
 
+#### Ubuntu Installation
+
+```sh
+sudo apt update
+snap install cmake --classic
+sudo apt install build-essential
+sudo apt install libpcl-dev
+cd ~
+git clone https://github.com/fierval/SFND_Lidar_Obstacle_Detection.git
+cd ~/SFND_Lidar_Obstacle_Detection
+mkdir build && cd build
+cmake ..
+make
+./environment
+```
 ## Project output (YouTube Video)
 
 [![YouTube Video](https://img.youtube.com/vi/07pfecuDdKE/0.jpg)](https://www.youtube.com/watch?v=07pfecuDdKE)
