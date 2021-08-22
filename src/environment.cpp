@@ -79,18 +79,18 @@ void simpleHighway(pcl::visualization::PCLVisualizer::Ptr& viewer)
 
 void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointClouds<pcl::PointXYZI>* pointProcessor, pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud) {
 
-  auto filterCloud = pointProcessor->FilterCloud(inputCloud, 0.3f, Eigen::Vector4f(-10, -5, -2, 1), Eigen::Vector4f(30, 7, 1, 1));
+  auto filterCloud = pointProcessor->FilterCloud(inputCloud, 0.2f, Eigen::Vector4f(-10, -5, -2, 1), Eigen::Vector4f(30, 7, 1, 1));
 
   // REVIEW: SegmentPlaneCustom uses custom implementation of RANSAC
-  auto segmentCloud = pointProcessor->SegmentPlaneCustom(filterCloud, 25, 0.3);
+  auto segmentCloud = pointProcessor->SegmentPlaneCustom(filterCloud, 25, 0.2);
 
   renderPointCloud(viewer, segmentCloud.first, "inliers");
   renderPointCloud(viewer, segmentCloud.second, "outliers");
 
   // REVIEW: ClusteringCustom uses custom clustering algorithm
-  auto cloudClusters = pointProcessor->ClusteringCustom(segmentCloud.first, 0.53, 10, 300);
+  auto cloudClusters = pointProcessor->ClusteringCustom(segmentCloud.first, 0.53, 10, 500);
   int clusterId = 0;
-  std::vector<Color> colors = { Color(1,0,0), Color(0,1,0), Color(0,0,1)};
+  std::vector<Color> colors = { Color(1,0,0), Color(1,1,0), Color(0,0,1)};
 
   for (auto cluster : cloudClusters)
   {
