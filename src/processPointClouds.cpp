@@ -220,8 +220,9 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
   std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
 
   std::shared_ptr<KdTree<PointT, 3>> tree(new KdTree<PointT, 3>);
+  tree->setInputCloud(*cloud);
 
-  auto cluster_idxs = euclideanCluster(*cloud, tree.get(), clusterTolerance);
+  auto cluster_idxs = euclideanCluster(*cloud, tree.get(), clusterTolerance, minSize, maxSize);
 
   int clusterId = 0;
 

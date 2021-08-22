@@ -1,15 +1,19 @@
+/* \author Aaron Brown */
+// Quiz on implementing kd tree
 #pragma once
+#include "render/render.h"
+
 
 // Structure to represent node of kd tree
 struct Node
 {
-	float * point;
+	std::vector<float> point;
 	int id;
 	Node* left;
 	Node* right;
 
-	Node(float * arr, int setId)
-	:	point(arr), id(setId), left(NULL), right(NULL)
+	Node(std::vector<float> arr, int setId)
+		: point(arr), id(setId), left(NULL), right(NULL)
 	{}
 
 	~Node()
@@ -25,16 +29,15 @@ struct KdTree
 	Node* root;
 
 	KdTree()
-	: root(NULL)	{
-	
-	}
+		: root(NULL)
+	{}
 
 	~KdTree()
 	{
 		delete root;
 	}
 
-	void insertHelper(Node** node, int depth, float * point, int id) {
+	void insertHelper(Node** node, int depth, std::vector<float> point, int id) {
 
 		if (*node == nullptr) {
 			*node = new Node(point, id);
@@ -51,36 +54,35 @@ struct KdTree
 		}
 	}
 
-	inline float get_distance(float * a, float * b) {
+	inline float get_distance(float* a, float* b) {
 
 		float res = 0;
 		for (int i = 0; i < Depth; i++) {
-			res += (a[i] - b[i]) * (a[i] - b[i]);
+			res += ((a[i] - b[i]) * (a[i] - b[i]));
 		}
 
 		return std::sqrtf(res);
 	}
 
-	inline bool is_in_box_of_distance(float * v, float * target, float dist) {
+	inline bool is_in_box_of_distance(float* v, float* target, float dist) {
 
 		bool res = true;
 		for (int i = 0; i < Depth; i++) {
-			if((target[i] + dist) < v[i] || (target[i] - dist) > v[i]) {
+			if ((target[i] + dist) < v[i] || (target[i] - dist) > v[i]) {
 				res = false;
 				break;
 			}
 		}
-		//return (target[0] + dist) >= v[0] && (target[1] + dist) >= v[1] && (target[0] - dist) <= v[0] && (target[1] - dist) <= v[1];
 		return res;
 	}
 
-	void searchHelper(float * target, Node* node, int depth, float distanceTol, std::vector<int>& ids) {
+	void searchHelper(std::vector<float> target, Node* node, int depth, float distanceTol, std::vector<int>& ids) {
 		if (node == nullptr) {
 			return;
 		}
 
-		if (is_in_box_of_distance(node->point, target, distanceTol)) {
-			float distance = get_distance(node->point, target);
+		if (is_in_box_of_distance(node->point.data(), target.data(), distanceTol)) {
+			float distance = get_distance(node->point.data(), target.data());
 			if (distance <= distanceTol) {
 				ids.push_back(node->id);
 			}
@@ -97,9 +99,16 @@ struct KdTree
 
 	}
 
+	inline void setInputCloud(pcl::PointCloud<PointT> cloud) {
+		for (int idx = 0; idx < cloud.points.size(); idx++) {
+			insert(cloud[idx], idx);
+		}
+	}
+
 	inline void insert(PointT point, int id)
 	{
-		insertHelper(&root, 0, point.data, id);
+		std::vector<float> data(point.data, point.data + Depth);
+		insertHelper(&root, 0, data, id);
 	}
 
 	// return a list of point ids in the tree that are within distance of target
@@ -107,11 +116,8 @@ struct KdTree
 	{
 		std::vector<int> ids;
 
-		searchHelper(target.data, root, 0, distanceTol, ids);
+		std::vector<float> data(target.data, target.data + Depth);
+		searchHelper(data, root, 0, distanceTol, ids);
 		return ids;
 	}
 };
-
-
-
-
