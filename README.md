@@ -50,7 +50,7 @@ For other platforms see the original [README](https://github.com/udacity/SFND_Li
    git clone https://github.com/fierval/SFND_Lidar_Obstacle_Detection.git
    ```
 
-3. To build and run from the command line (or simply build/run from Visual Studio or VSCode)
+3. To build and run from the command line:
 
    ```shell
    cd ~/SFND_Lidar_Obstacle_Detection
