@@ -88,7 +88,7 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer, ProcessPointCloud
   renderPointCloud(viewer, segmentCloud.second, "outliers");
 
   // REVIEW: ClusteringCustom uses custom clustering algorithm
-  auto cloudClusters = pointProcessor->ClusteringCustom(segmentCloud.first, 0.54, 7, 500);
+  auto cloudClusters = pointProcessor->ClusteringCustom(segmentCloud.first, 0.54, 10, 500);
   int clusterId = 0;
   std::vector<Color> colors = { Color(1,0,0), Color(1,1,0), Color(0,0,1)};
 
@@ -137,7 +137,7 @@ int main(int argc, char** argv)
   initCamera(setAngle, viewer);
 
   ProcessPointClouds<pcl::PointXYZI>* pointProcessor = new ProcessPointClouds<pcl::PointXYZI>();
-  std::vector<boost::filesystem::path> stream = pointProcessor->streamPcd(STREAM_PCD);
+  std::vector<boost::filesystem::path> stream = pointProcessor->streamPcd("../src/sensors/data/pcd/data_1");
 
   auto streamIterator = stream.begin();
   pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloud;

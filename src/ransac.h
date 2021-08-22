@@ -30,7 +30,7 @@ pcl::PointXYZI get_plane(Point3& p1, Point3& p2, Point3& p3)
 template <typename Point3, typename Point4>
 float distance_to_plane(Point3& pt, Point4& plane) {
 
-  return std::fabs(plane.x * pt.x + plane.y * pt.y + plane.z * pt.z + plane.intensity) / std::sqrtf(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
+  return std::fabs(plane.x * pt.x + plane.y * pt.y + plane.z * pt.z + plane.intensity) / std::sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
 
 }
 

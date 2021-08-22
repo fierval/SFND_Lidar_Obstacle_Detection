@@ -31,7 +31,7 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
   // TODO:: Fill in the function to do voxel grid point reduction and region based filtering
    // Create the filtering object
 
-  pcl::PointCloud<PointT>::Ptr cloud_filtered(new pcl::PointCloud<PointT>());
+  typename pcl::PointCloud<PointT>::Ptr cloud_filtered(new pcl::PointCloud<PointT>());
 
   // ROI
   pcl::CropBox<PointT> crop_box(true);
@@ -43,7 +43,7 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
   vg.setLeafSize(filterRes, filterRes, filterRes);
   vg.filter(*cloud_filtered);
 
-  pcl::PointCloud<PointT>::Ptr cloud_region(new pcl::PointCloud<PointT>());
+  typename pcl::PointCloud<PointT>::Ptr cloud_region(new pcl::PointCloud<PointT>());
   crop_box.setInputCloud(cloud_filtered);
   crop_box.filter(*cloud_region);
 
@@ -55,7 +55,7 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::FilterCloud(ty
   roof.setInputCloud(cloud_region);
   roof.filter(indices);
 
-  pcl::PointIndices::Ptr inliers{ new pcl::PointIndices() };
+  typename pcl::PointIndices::Ptr inliers{ new pcl::PointIndices() };
   for (int p : indices) {
     inliers->indices.push_back(p);
   }
@@ -80,8 +80,8 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 {
   // TODO: Create two new point clouds, one cloud with obstacles and other with segmented plane
   pcl::ExtractIndices<PointT> extract;
-  pcl::PointCloud<PointT>::Ptr obst_cloud(new pcl::PointCloud<PointT>());
-  pcl::PointCloud<PointT>::Ptr plane_cloud(new pcl::PointCloud<PointT>());
+  typename pcl::PointCloud<PointT>::Ptr obst_cloud(new pcl::PointCloud<PointT>());
+  typename pcl::PointCloud<PointT>::Ptr plane_cloud(new pcl::PointCloud<PointT>());
 
   // separate the plane cloud - just the inliner
   for (int index : inliers->indices) {
@@ -140,8 +140,8 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 
   std::unordered_set<int> inliers = Ransac<PointT>(cloud, maxIterations, distanceThreshold);
 
-  pcl::PointCloud<PointT>::Ptr  cloudInliers(new pcl::PointCloud<PointT>());
-  pcl::PointCloud<PointT>::Ptr cloudOutliers(new pcl::PointCloud<PointT>());
+  typename pcl::PointCloud<PointT>::Ptr  cloudInliers(new pcl::PointCloud<PointT>());
+  typename pcl::PointCloud<PointT>::Ptr cloudOutliers(new pcl::PointCloud<PointT>());
 
   if (inliers.empty())
   {
@@ -179,7 +179,7 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 
   // TODO:: Fill in the function to perform euclidean clustering to group detected obstacles
     // Creating the KdTree object for the search method of the extraction
-  pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
+  typename pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
   tree->setInputCloud(cloud);
 
   std::vector<pcl::PointIndices> cluster_indices;
@@ -193,7 +193,7 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 
   for (std::vector<pcl::PointIndices>::const_iterator it = cluster_indices.begin(); it != cluster_indices.end(); ++it)
   {
-    pcl::PointCloud<PointT>::Ptr cloud_cluster(new pcl::PointCloud<PointT>);
+    typename pcl::PointCloud<PointT>::Ptr cloud_cluster(new pcl::PointCloud<PointT>);
     for (const auto& idx : it->indices)
       cloud_cluster->push_back((*cloud)[idx]); //*
     cloud_cluster->width = cloud_cluster->size();
@@ -228,7 +228,7 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> ProcessPointClouds<PointT>::C
 
   for (std::vector<int> cluster_idx : cluster_idxs)
   {
-    pcl::PointCloud<PointT>::Ptr clusterCloud(new pcl::PointCloud<PointT>());
+    typename pcl::PointCloud<PointT>::Ptr clusterCloud(new pcl::PointCloud<PointT>());
     for (int idx : cluster_idx) {
         clusterCloud->points.push_back(cloud->points[idx]);
     }

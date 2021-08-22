@@ -61,7 +61,7 @@ struct KdTree
 			res += ((a[i] - b[i]) * (a[i] - b[i]));
 		}
 
-		return std::sqrtf(res);
+		return std::sqrt(res);
 	}
 
 	inline bool is_in_box_of_distance(float* v, float* target, float dist) {
